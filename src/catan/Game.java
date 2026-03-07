@@ -18,13 +18,13 @@ public class Game {
 	private List<Player> players;
 	private int currentPlayer;
 	private Dice dice;
-
 	private int maxRounds;
     private int currentRound;
-
+    private int mode;
     private Random rng;
+    private int action;
 
-	public Game(){
+	public Game(int mode){
 		this.board = new Board();
         this.players = new ArrayList<>();
         this.currentPlayer = 0;
@@ -32,16 +32,20 @@ public class Game {
 
         this.maxRounds = 30;
         this.currentRound = 1;
+        this.mode= mode;
         this.rng = new Random();
 	}
 	public void startGame(){
-		//create 4 players
-        for (int i = 0; i < 4; i++) {
-            players.add(new Player(i));
+        if(mode ==1){
+            for (int i = 0; i < 4; i++) {
+                players.add(new Player(i));
+            }
+        } else if (mode ==2) {
+            players.add(new HumanPlayer(1));
+            for (int i = 2; i < 3; i++) {
+                players.add(new Player(i));
+            }
         }
-
-        //create small board
-        //tiles
         board.addTile(1, new Tile(1, "WOOD", 6));
         board.addTile(2, new Tile(2, "BRICK", 8));
         board.addTile(3, new Tile(3, "SHEEP", 9));
@@ -86,6 +90,7 @@ public class Game {
 	public void nextTurn() {
 		 Player p = players.get(currentPlayer);
 
+
         int roll = dice.roll();
         System.out.println("[Round " + currentRound + "] Player " + currentPlayer + " rolled " + roll);
 
@@ -98,12 +103,16 @@ public class Game {
                 System.out.println("Player " + currentPlayer + " gets 1 " + t.getResourceType());
             }
         }
+        if(!(p instanceof HumanPlayer)){
+            action = rng.nextInt(3);
+        }
+        else{
 
-        // random action: 0=settlement, 1=road, 2=pass
-        int action = rng.nextInt(3);
+            action = ((HumanPlayer) p).askForaction();
+        }
+
 
         if (action == 0){
-            // settlement cost: 1 WOOD + 1 BRICK
             boolean paidWood = p.useResource("WOOD", 1);
             boolean paidBrick = p.useResource("BRICK", 1);
 
@@ -157,7 +166,7 @@ public class Game {
 
             if (!placed) {
                 // refund if nowhere to place
-                p.addResources("WOOD", 1);
+                p.addResources("WOOD", ~1);
                 System.out.println("Player " + currentPlayer + " tried Road but no free Edge.");
             }
 

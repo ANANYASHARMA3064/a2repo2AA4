@@ -12,11 +12,11 @@ import java.util.Map;
  * 
  */
 public class Player {
-	private int playerId;
-	private int victoryPoints;
-	private boolean largestArmy;
-	private boolean largestVillage;
-	private Map<String, Integer> resources;
+	protected int playerId;
+	protected int victoryPoints;
+	protected boolean largestArmy;
+	protected boolean largestVillage;
+	protected Map<String, Integer> resources;
 
 	public Player(int playerId){
 		this.playerId = playerId;
@@ -25,6 +25,7 @@ public class Player {
         this.largestVillage = false;
         this.resources = new HashMap<>();
 	}
+
 
 	/**
 	 * 
