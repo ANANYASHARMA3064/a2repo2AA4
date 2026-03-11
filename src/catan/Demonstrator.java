@@ -15,5 +15,6 @@ public class Demonstrator {
 
         Game game = new Game(move);
         game.startGame();
+        scanner.close();
     }
 }
